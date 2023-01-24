@@ -1,2 +1,7 @@
 .idea
 temp
+
+*.txt
+*.yml
+*.ini
+*.json
