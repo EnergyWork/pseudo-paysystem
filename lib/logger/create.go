@@ -3,30 +3,34 @@ package logger
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func LoadLogger(dev ...bool) *zerolog.Logger {
 	writer := zerolog.ConsoleWriter{
-		Out:        os.Stdout,
-		TimeFormat: time.StampMicro,
-		PartsExclude: []string{
+		Out: os.Stderr,
+		// TimeFormat: time.StampMicro,
+		/*PartsExclude: []string{
 			zerolog.TimestampFieldName,
+		},*/
+		FormatTimestamp: func(i interface{}) string {
+			return time.Now().Format(time.StampMicro)
 		},
 		FormatLevel: func(i interface{}) string {
 			return strings.ToUpper(fmt.Sprintf("[%s]", i))
 		},
-		FormatCaller: func(i interface{}) string {
+		/*FormatCaller: func(i interface{}) string {
 			return filepath.Base(fmt.Sprintf("%s", i))
-		},
+		},*/
 		FormatMessage: func(i interface{}) string {
 			return fmt.Sprintf("| %s |", i)
 		},
-		// NoColor:    			false,
+		// Additional parameters
+		// NoColor: false,
 		// PartsOrder:          nil,
 		// FieldsExclude:       nil, // todo read about that
 		// FormatTimestamp:     nil,
@@ -35,8 +39,9 @@ func LoadLogger(dev ...bool) *zerolog.Logger {
 		// FormatErrFieldName:  nil,
 		// FormatErrFieldValue: nil,
 		// FormatExtra:         nil,
+		// PartsExclude			nil,
 	}
-	logger := zerolog.New(writer).With().Timestamp().Caller().Logger()
+	logger := log.Output(writer).With().Timestamp().Logger()
 	if dev[0] == true {
 		logger.Level(zerolog.DebugLevel)
 	} else {

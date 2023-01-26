@@ -8,25 +8,30 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Config struct {
-	API struct {
-		Host string `yaml:"host"`
-		Port string `yaml:"port"`
-	} `yaml:"api"`
-	NATS struct {
-		Host string `yaml:"host"`
-		Port string `yaml:"port"`
-	} `yaml:"nats"`
-	SQL struct {
-		Type     string `yaml:"type"` // eg postgers/sqlite/mysql
-		Host     string `yaml:"host"`
-		Port     string `yaml:"port"`
-		User     string `yaml:"user"`
-		Password string `yaml:"password"`
-		Database string `yaml:"database"`
-	} `yaml:"sql"`
+type API struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+}
 
-	DEV bool `yaml:"dev"`
+type NATS struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+}
+
+type SQL struct {
+	Type     string `yaml:"type"` // eg postgers/sqlite/mysql
+	Host     string `yaml:"host"`
+	Port     string `yaml:"port"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	Database string `yaml:"database"`
+}
+
+type Config struct {
+	API  API  `yaml:"api"`
+	NATS NATS `yaml:"nats"`
+	SQL  SQL  `yaml:"sql"`
+	DEV  bool `yaml:"dev"`
 }
 
 func LoadConfig(path string) (*Config, *errs.Error) {

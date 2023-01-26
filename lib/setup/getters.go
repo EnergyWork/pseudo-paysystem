@@ -1,0 +1,24 @@
+package setup
+
+import (
+	"github.com/energywork/pseudo-paysystem/lib/config"
+	"github.com/energywork/pseudo-paysystem/lib/domain"
+	"github.com/nats-io/nats.go"
+	"gorm.io/gorm"
+)
+
+func (s *Setup) NATS() *nats.Conn {
+	return s.nc
+}
+
+func (s *Setup) GORM() *gorm.DB {
+	return s.db
+}
+
+func (s *Setup) Log() domain.Logger {
+	return s.log
+}
+
+func (s *Setup) Config() *config.Config {
+	return s.cfg
+}

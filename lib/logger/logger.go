@@ -46,7 +46,7 @@ func (l *CLogger) Trace(m ...interface{}) {
 func (l *CLogger) WithPrefix(prefix string) *CLogger {
 	var p string
 	if len(prefix) > 0 {
-		p = prefix + ": "
+		p = prefix // + ": "
 	}
 	if len(p) > 0 {
 		l.prefix = p + ": "

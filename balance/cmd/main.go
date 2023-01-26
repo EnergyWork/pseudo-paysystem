@@ -31,6 +31,12 @@ func main() {
 
 	set := setup.New(cfg, l)
 
+	if err := set.ConnectNATS(); err != nil {
+		l.Panic(err)
+	}
+
+	l.Info("Connected to NATS")
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
 
