@@ -7,9 +7,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/nats-io/nats.go"
+
 	"github.com/energywork/pseudo-paysystem/lib/errs"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
-	"github.com/nats-io/nats.go"
 )
 
 // WorkerNATS subscribes to NATS queue
@@ -22,18 +23,13 @@ func WorkerNATS(set *setup.Setup, queue string) *errs.Error {
 	var worker *nats.Subscription
 	var err error
 
-	i := 0 // delete
+	worker, err = set.NATS().Subscribe(queue, func(m *nats.Msg) {
 
-	worker, err = set.NATS().QueueSubscribe(queue, queue, func(m *nats.Msg) {
-
-		/*go func() {
-			l.Info("got message from nats")
-		}()*/
-
-		i++
-		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-		l.Info("[#%d] Received on [%s] Queue[%s] Pid[%d]: '%s'", i, m.Subject, m.Sub.Queue, os.Getpid(), string(m.Data))
-		m.Respond([]byte("some reply string"))
+		go func() {
+			time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
+			l.Info("Received on [%s] Queue[%s] Pid[%d]: '%s'", m.Subject, m.Sub.Queue, os.Getpid(), string(m.Data))
+			m.Respond([]byte("some reply string 1"))
+		}()
 
 	})
 
@@ -42,9 +38,9 @@ func WorkerNATS(set *setup.Setup, queue string) *errs.Error {
 		signalChan <- syscall.SIGTERM
 	}
 
-	set.NATS().Flush()
+	_ = set.NATS().Flush()
 
-	if err := set.NATS().LastError(); err != nil {
+	if err = set.NATS().LastError(); err != nil {
 		l.Fatal("LastError: %s", err)
 		signalChan <- syscall.SIGTERM
 	}
@@ -54,23 +50,11 @@ func WorkerNATS(set *setup.Setup, queue string) *errs.Error {
 	<-signalChan
 
 	l.Info("Draining...")
-	set.NATS().Drain()
+	err = set.NATS().Drain()
+	if err != nil {
+		return errs.ErrInternal.SetMsg(err.Error())
+	}
 
-	l.Info("Exiting")
-
-	/*defer func(worker *nats.Subscription) {
-		err := worker.Unsubscribe()
-		if err != nil {
-			l.Error("unable to unsubscribe queue:", err)
-			signalChan <- syscall.SIGTERM
-		}
-	}(worker)
-
-	l.Info("Listening to " + queue + " queue")
-
-	<-signalChan
-
-	l.Info("Exiting ...")*/
-
+	l.Info("Exiting...")
 	return nil
 }

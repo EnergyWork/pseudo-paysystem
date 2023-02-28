@@ -27,7 +27,11 @@ func LoadLogger(dev ...bool) *zerolog.Logger {
 			return filepath.Base(fmt.Sprintf("%s", i))
 		},*/
 		FormatMessage: func(i interface{}) string {
-			return fmt.Sprintf("| %s |", i)
+			if msg, ok := i.(string); ok && len(msg) > 1000 {
+				return fmt.Sprintf("|SHORT: %s... |", i.(string)[:200])
+			} else {
+				return fmt.Sprintf("| %s |", i)
+			}
 		},
 		// Additional parameters
 		// NoColor: false,
@@ -41,11 +45,13 @@ func LoadLogger(dev ...bool) *zerolog.Logger {
 		// FormatExtra:         nil,
 		// PartsExclude			nil,
 	}
-	logger := log.Output(writer).With().Timestamp().Logger()
+	logger := log.Output(writer)
+
 	if dev[0] == true {
 		logger.Level(zerolog.DebugLevel)
 	} else {
 		logger.Level(zerolog.InfoLevel)
 	}
+
 	return &logger
 }

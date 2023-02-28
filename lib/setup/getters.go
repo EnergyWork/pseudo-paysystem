@@ -1,11 +1,17 @@
 package setup
 
 import (
-	"github.com/energywork/pseudo-paysystem/lib/config"
-	"github.com/energywork/pseudo-paysystem/lib/domain"
+	"github.com/labstack/echo/v4"
 	"github.com/nats-io/nats.go"
 	"gorm.io/gorm"
+
+	"github.com/energywork/pseudo-paysystem/lib/config"
+	"github.com/energywork/pseudo-paysystem/lib/domain"
 )
+
+func (s *Setup) Echo() *echo.Echo {
+	return s.echo
+}
 
 func (s *Setup) NATS() *nats.Conn {
 	return s.nc

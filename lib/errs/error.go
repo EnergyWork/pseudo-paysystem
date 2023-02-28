@@ -2,6 +2,9 @@ package errs
 
 import "fmt"
 
+// Error representation of error struct
+//
+//swagger:model Error
 type Error struct {
 	Code string `json:"Code"`
 	Msg  string `json:"Message"`

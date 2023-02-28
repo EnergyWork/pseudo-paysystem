@@ -1,12 +1,12 @@
 package main
 
-import (
-	"os"
-	"os/signal"
-	"syscall"
+// swagger generate spec -o ./swagger.yaml --scan-models
+// swagger serve -F=swagger --no-open swagger.yaml
 
-	balance "github.com/energywork/pseudo-paysystem/balance/api"
-	"github.com/energywork/pseudo-paysystem/lib/api"
+import (
+	"github.com/caarlos0/env/v7"
+
+	"github.com/energywork/pseudo-paysystem/balance/internal/app"
 	"github.com/energywork/pseudo-paysystem/lib/config"
 	"github.com/energywork/pseudo-paysystem/lib/logger"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
@@ -17,30 +17,34 @@ var (
 )
 
 func main() {
-	configPath, ok := os.LookupEnv("CFG_PATH")
-	if !ok {
-		configPath = "./config.yml"
-	}
-
 	l := logger.New(logger.LoadLogger(true)).WithPrefix(Service)
 
-	cfg, err := config.LoadConfig(configPath)
+	// load configuration (env)
+	cfg := &config.Config{Service: Service}
+	if err := env.Parse(cfg); err != nil {
+		l.Fatal(err)
+	}
+
+	// forming setup
+	set := setup.New(l, cfg)
+	if err := set.NewEcho(); err != nil {
+		l.Fatal(err)
+	}
+	/*if err := set.ConnectPostgres(); err != nil {
+		l.Fatal(err)
+	}*/
+	if err := set.ConnectNATS(); err != nil {
+		l.Fatal(err)
+	}
+
+	// create app
+	a, err := app.New(set)
 	if err != nil {
 		l.Fatal(err)
 	}
 
-	set := setup.New(cfg, l)
-
-	if err := set.ConnectNATS(); err != nil {
-		l.Panic(err)
-	}
-
-	l.Info("Connected to NATS")
-
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGTERM)
-
-	if err := api.WorkerNATS(set, balance.Queue); err != nil {
-		l.Error(err)
+	// run service
+	if err := a.Run(); err != nil {
+		l.Fatal(err)
 	}
 }

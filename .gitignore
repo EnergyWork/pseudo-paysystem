@@ -3,5 +3,12 @@ temp
 
 *.txt
 *.yml
+*.yaml
 *.ini
 *.json
+
+*.bat
+*.sh
+*.exe
+*.bin
+*.dll
