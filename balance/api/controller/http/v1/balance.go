@@ -24,7 +24,7 @@ func newBalanceRoutes(g *echo.Group, uc usecase.Balance, set *setup.Setup) {
 
 func (r *balanceRoutes) create(c echo.Context) error {
 
-	var req usecase.ReqBalanceCreate
+	var req *usecase.ReqBalanceCreate
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, errs.New().SetCode(errs.Syntax).SetMsg("bad request"))
 	}
@@ -39,7 +39,7 @@ func (r *balanceRoutes) create(c echo.Context) error {
 
 func (r *balanceRoutes) hold(c echo.Context) error {
 
-	var req usecase.ReqBalanceHold
+	var req *usecase.ReqBalanceHold
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, errs.New().SetCode(errs.Syntax).SetMsg("bad request"))
 	}

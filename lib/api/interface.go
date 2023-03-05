@@ -1,15 +1,15 @@
 package api
 
 import (
-	"github.com/energywork/pseudo-paysystem/lib/setup"
+	"time"
+
+	"github.com/energywork/pseudo-paysystem/lib/errs"
 )
 
-type Service interface {
-	Setup() *setup.Setup
-}
-
 type Request interface {
-	Setup() *setup.Setup
+	Timeout() time.Duration
+	Validate() *errs.Error
+	Authorize() *errs.Error
 }
 
 type Reply interface {

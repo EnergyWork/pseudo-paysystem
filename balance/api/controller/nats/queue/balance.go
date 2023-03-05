@@ -1,34 +1,28 @@
 package queue
 
 import (
-	"os"
-
 	"github.com/nats-io/nats.go"
 
 	"github.com/energywork/pseudo-paysystem/balance/api/usecase"
+	"github.com/energywork/pseudo-paysystem/lib/natsserver"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
 )
 
 type balanceRoutes struct {
-	uc  usecase.Balance
-	set *setup.Setup
+	uc usecase.Balance
 }
 
 func newBalanceRoutes(uc usecase.Balance, set *setup.Setup) map[string]func() nats.MsgHandler {
-	r := balanceRoutes{uc: uc, set: set}
-	routes := make(map[string]func() nats.MsgHandler, 0)
-	routes["balance/wallet/create"] = r.create // balance/wallet/create
-	routes["balance/wallet/hold"] = r.hold
-	return routes
+	r := balanceRoutes{uc: uc}
+	natsserver.Register(set.Config().Service, "balance/wallet/create", r.create)
+	natsserver.Register(set.Config().Service, "balance/wallet/hold", r.hold)
+	return natsserver.GetServiceHandlers(set.Config().Service)
 }
 
 func (r *balanceRoutes) create() nats.MsgHandler {
-	return func(msg *nats.Msg) {
-		r.set.Log().Info("Received on [%s] Queue[%s] Pid[%d]: '%s'", msg.Subject, msg.Sub.Queue, os.Getpid(), string(msg.Data))
-		_ = msg.Respond([]byte(`{"some_reply"":"some_result"}`))
-	}
+	return natsserver.NatsHandler((*usecase.ReqBalanceCreate)(nil), r.uc.CreateBalance)
 }
 
 func (r *balanceRoutes) hold() nats.MsgHandler {
-	return func(msg *nats.Msg) {}
+	return natsserver.NatsHandler((*usecase.ReqBalanceHold)(nil), r.uc.HoldBalance)
 }

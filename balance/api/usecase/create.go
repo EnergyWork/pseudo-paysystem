@@ -23,7 +23,7 @@ type ReqBalanceCreate2 struct {
 //
 //swagger:model RequestBalanceCreate
 type ReqBalanceCreate struct {
-	api.Header `json:"-"`
+	api.Header
 
 	// WalletID is value of wallet number
 	WalletID string `json:"wallet_id"`
@@ -36,13 +36,19 @@ type ReqBalanceCreate struct {
 //
 //swagger:response rpl_balance_create
 type RplBalanceCreate struct {
-	api.Header `json:"-"`
+	api.Header
 }
 
 // CreateBalance : balance creation handler
-func (s *UseCase) CreateBalance(req ReqBalanceCreate) (api.Reply, *errs.Error) {
-
-	//
-
-	return nil, errs.ErrInternal.SetMsg("test message")
+func (s *UseCase) CreateBalance(data api.Request) (api.Reply, *errs.Error) {
+	req, ok := data.(*ReqBalanceCreate)
+	if !ok {
+		return nil, errs.ErrInternal.SetMsg("fatal error with type casting")
+	}
+	rpl := &RplBalanceCreate{}
+	s.log.Info("type cast: ok")
+	s.log.Info("req: %+v", req)
+	s.log.Info("balance created")
+	s.log.Info("rpl: %+v", rpl)
+	return rpl, nil
 }

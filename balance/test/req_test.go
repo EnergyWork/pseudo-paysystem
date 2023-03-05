@@ -7,6 +7,7 @@ import (
 
 	"github.com/nats-io/nats.go"
 
+	"github.com/energywork/pseudo-paysystem/balance/api/usecase"
 	"github.com/energywork/pseudo-paysystem/lib/api"
 	"github.com/energywork/pseudo-paysystem/lib/config"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
@@ -111,9 +112,13 @@ func TestNewNATSRequest(t *testing.T) {
 	}
 	set := setup.GetSetupForTest(t, cfg, false)
 	// -----------------------------------------------------------------------------------------------------------------
-	data := []byte("some request data single")
+	dataReq := &usecase.ReqBalanceCreate{
+		WalletID: "123",
+		Value:    123,
+	}
+	dataRpl := &usecase.RplBalanceCreate{}
 	subj := "balance/wallet/create"
-	rpl, err := api.NewNATSRequest(set, subj, data, time.Second)
+	rpl, err := api.NewNATSRequest(set, subj, dataReq, dataRpl, 5*time.Second)
 	if err != nil {
 		t.Fatal(err)
 	}

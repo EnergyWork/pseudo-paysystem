@@ -4,16 +4,10 @@ import (
 	"time"
 
 	"github.com/energywork/pseudo-paysystem/lib/errs"
-	"github.com/energywork/pseudo-paysystem/lib/setup"
 )
 
 type Header struct {
-	//swagger:ignore
-	set *setup.Setup
-}
-
-func (h *Header) Setup() *setup.Setup {
-	return h.set
+	Error *errs.Error
 }
 
 func (h *Header) Timeout() time.Duration {
@@ -26,12 +20,4 @@ func (h *Header) Validate() *errs.Error {
 
 func (h *Header) Authorize() *errs.Error {
 	return nil
-}
-
-func (h *Header) SetHeader() {
-
-}
-
-func (h *Header) GetHeader() {
-
 }

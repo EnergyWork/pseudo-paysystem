@@ -8,8 +8,8 @@ import (
 )
 
 type Balance interface {
-	CreateBalance(ReqBalanceCreate) (api.Reply, *errs.Error)
-	HoldBalance(ReqBalanceHold) (api.Reply, *errs.Error)
+	CreateBalance(api.Request) (api.Reply, *errs.Error)
+	HoldBalance(api.Request) (api.Reply, *errs.Error)
 }
 
 type UseCase struct { // фактически UseCase

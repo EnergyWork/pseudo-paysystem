@@ -17,7 +17,8 @@ import (
 //
 //swagger:parameters RequestBalanceHold
 type ReqBalanceHold struct {
-	api.Header `json:"-"`
+	//swagger:ignore
+	api.Header
 
 	// WalletID value of wallet number
 	//in:body
@@ -37,15 +38,19 @@ type ReqBalanceHold struct {
 //swagger:response rpl_balance_hold
 type RplBalanceHold struct {
 	//swagger:ignore
-	api.Header `json:"-"`
+	api.Header
 }
 
 // HoldBalance : balance holding handler
-func (s *UseCase) HoldBalance(req ReqBalanceHold) (api.Reply, *errs.Error) {
-	s.log.Info("Request: %+v", req)
-	s.log.Info("some actions")
-
-	//
-
-	return nil, errs.ErrInternal.SetMsg("test message")
+func (s *UseCase) HoldBalance(data api.Request) (api.Reply, *errs.Error) {
+	req, ok := data.(*ReqBalanceHold)
+	if !ok {
+		return nil, errs.ErrInternal.SetMsg("fatal error with type casting")
+	}
+	rpl := &RplBalanceCreate{}
+	s.log.Info("type cast: ok")
+	s.log.Info("req: %+v", req)
+	s.log.Info("balance holed")
+	s.log.Info("rpl: %+v", rpl)
+	return rpl, nil
 }

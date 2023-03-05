@@ -27,9 +27,6 @@ func main() {
 	if err := set.NewEcho(); err != nil {
 		l.Fatal(err)
 	}
-	if err := set.ConnectPostgres(); err != nil {
-		l.Fatal(err)
-	}
 	if err := set.ConnectNATS(); err != nil {
 		l.Fatal(err)
 	}
