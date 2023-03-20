@@ -23,7 +23,7 @@ func New(set *setup.Setup) (*App, *errs.Error) {
 
 func (a *App) Run() *errs.Error {
 
-	useCase := usecase.New()
+	useCase := usecase.New(a.set)
 	_ = v1.New(a.set, useCase).ConfigureRouter()
 
 	httpServer := httpserver.New( // this starts the server
