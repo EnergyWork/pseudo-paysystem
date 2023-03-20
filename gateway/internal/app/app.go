@@ -1,7 +1,12 @@
 package app
 
 import (
+	"time"
+
+	v1 "github.com/energywork/pseudo-paysystem/gateway/api/controller/http/v1"
+	"github.com/energywork/pseudo-paysystem/gateway/api/usecase"
 	"github.com/energywork/pseudo-paysystem/lib/errs"
+	"github.com/energywork/pseudo-paysystem/lib/httpserver"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
 )
 
@@ -18,34 +23,27 @@ func New(set *setup.Setup) (*App, *errs.Error) {
 
 func (a *App) Run() *errs.Error {
 
+	useCase := usecase.New()
+	_ = v1.New(a.set, useCase).ConfigureRouter()
+
+	httpServer := httpserver.New( // this starts the server
+		a.set.Echo(),
+		httpserver.Addr(a.set.Config().HttpHost, a.set.Config().HttpPort),
+		httpserver.ReadTimeout(time.Duration(a.set.Config().ReadTimeout)),
+		httpserver.WriteTimeout(time.Duration(a.set.Config().WriteTimeout)),
+		httpserver.ShutdownTimeout(time.Duration(a.set.Config().ShutdownTimeout)),
+	)
+
+	// a.set.Log().Info("The http server is listening to an address: %s", httpServer.Addr())
+
+	if err := <-httpServer.Notify(); err != nil {
+		a.set.Log().Info("Run - httpServer: %s", err)
+	}
+
+	// Shutdown HTTP Server
+	if err := httpServer.Shutdown(); err != nil {
+		return nil
+	}
+
 	return nil
 }
-
-// HTTP Server
-/*c := v1.New(a.set, useCase).ConfigureRouter()
-
-go func() {
-	if err := c.SaveRoutes(); err != nil {
-		a.set.Log().Error(err)
-	} else {
-		a.set.Log().Info("routes saved (routes.json)")
-	}
-}()
-
-httpServer := httpserver.NewHTTPServer( // this starts the server
-	a.set.Echo(),
-	httpserver.Addr(a.set.Config().HttpHost, a.set.Config().HttpPort),
-	httpserver.ReadTimeout(time.Duration(a.set.Config().ReadTimeout)),
-	httpserver.WriteTimeout(time.Duration(a.set.Config().WriteTimeout)),
-	httpserver.ShutdownTimeout(time.Duration(a.set.Config().ShutdownTimeout)),
-)
-
-a.set.Log().Info("The http server is listening to an address: %s", httpServer.Addr())*/
-
-/*case err := <-httpServer.Notify():
-a.set.Log().Info("Run - httpServer: %s", err)*/
-
-// Shutdown HTTP Server
-/*if err := httpServer.Shutdown(); err != nil {
-	return nil
-}*/

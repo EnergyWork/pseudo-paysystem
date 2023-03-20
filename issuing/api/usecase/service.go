@@ -1,15 +1,19 @@
 package usecase
 
 import (
-	"github.com/energywork/pseudo-paysystem/balance/internal/repository"
+	"github.com/energywork/pseudo-paysystem/issuing/internal/repository"
 	"github.com/energywork/pseudo-paysystem/lib/api"
 	"github.com/energywork/pseudo-paysystem/lib/errs"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
 )
 
-type Balance interface {
-	CreateBalance(api.Request) (api.Reply, *errs.Error)
-	HoldBalance(api.Request) (api.Reply, *errs.Error)
+var _ Issuing = (*UseCase)(nil) // implementation checker
+
+type Issuing interface {
+	WalletCreate(api.Request) (api.Reply, *errs.Error)
+	// todo two more methods
+	// Update(api.Request) (api.Reply, *errs.Error)
+	// Get(api.Request) (api.Reply, *errs.Error)
 }
 
 type UseCase struct {

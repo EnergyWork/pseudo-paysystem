@@ -7,6 +7,8 @@ import (
 	"github.com/energywork/pseudo-paysystem/lib/setup"
 )
 
+const Queue = "balance-queue"
+
 type Controller struct {
 	set *setup.Setup
 	uc  usecase.Balance

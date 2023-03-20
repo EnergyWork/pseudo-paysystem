@@ -5,9 +5,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/energywork/pseudo-paysystem/balance/api/controller/nats/queue"
-	"github.com/energywork/pseudo-paysystem/balance/api/usecase"
-	"github.com/energywork/pseudo-paysystem/balance/internal/repository/pg"
+	"github.com/energywork/pseudo-paysystem/issuing/api/controller/nats/queue"
+	"github.com/energywork/pseudo-paysystem/issuing/api/usecase"
+	"github.com/energywork/pseudo-paysystem/issuing/internal/repository/pg"
 	"github.com/energywork/pseudo-paysystem/lib/errs"
 	"github.com/energywork/pseudo-paysystem/lib/natsserver"
 	"github.com/energywork/pseudo-paysystem/lib/setup"

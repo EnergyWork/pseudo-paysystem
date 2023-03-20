@@ -10,15 +10,15 @@ func init() {
 	routes = make(map[string]map[string]func() nats.MsgHandler, 0)
 }
 
-func Register(service string, name string, handler func() nats.MsgHandler) {
+func Register(service string, subject string, handler func() nats.MsgHandler) {
 	if _, ok := routes[service]; !ok {
 		routes[service] = make(map[string]func() nats.MsgHandler, 0)
 	}
-	routes[service][name] = handler
+	routes[service][subject] = handler
 }
 
-func GetHandler(service, name string) func() nats.MsgHandler {
-	return routes[service][name]
+func GetHandler(service, subject string) func() nats.MsgHandler {
+	return routes[service][subject]
 }
 
 func GetServiceHandlers(service string) map[string]func() nats.MsgHandler {

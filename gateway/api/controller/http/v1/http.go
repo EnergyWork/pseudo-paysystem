@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/energywork/pseudo-paysystem/balance/api/usecase"
+	"github.com/energywork/pseudo-paysystem/gateway/api/usecase"
 	"github.com/energywork/pseudo-paysystem/lib/errs"
 	"github.com/energywork/pseudo-paysystem/lib/httpserver/middleware"
 	"github.com/energywork/pseudo-paysystem/lib/setup"
@@ -14,15 +14,12 @@ import (
 	mw "github.com/labstack/echo/v4/middleware"
 )
 
-// Controller ...
-//
-// deprecated
 type Controller struct {
-	uc  usecase.Balance
+	uc  usecase.API
 	set *setup.Setup
 }
 
-func New(set *setup.Setup, uc usecase.Balance) *Controller {
+func New(set *setup.Setup, uc usecase.API) *Controller {
 	return &Controller{
 		set: set,
 		uc:  uc,
@@ -41,7 +38,7 @@ func (c *Controller) ConfigureRouter() *Controller {
 	e.Use(middleware.RequestLogging) // all routes on the server
 	// routers
 	g := e.Group("/v1")
-	newBalanceRoutes(g, c.uc, c.set) // route installer
+	newRoutes(g, c.uc) // route installer
 	return c
 }
 
