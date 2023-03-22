@@ -48,9 +48,9 @@ func (s *UseCase) HoldBalance(data api.Request) (api.Reply, *errs.Error) {
 		return nil, errs.ErrInternal.SetMsg("fatal error with type casting")
 	}
 	rpl := &RplBalanceCreate{}
-	s.log.Info("type cast: ok")
-	s.log.Info("req: %+v", req)
-	s.log.Info("balance holed")
-	s.log.Info("rpl: %+v", rpl)
+	s.set.Log().Info("type cast: ok")
+	s.set.Log().Info("req: %+v", req)
+	s.set.Log().Info("balance holed")
+	s.set.Log().Info("rpl: %+v", rpl)
 	return rpl, nil
 }

@@ -37,10 +37,11 @@ func (s *UseCase) WalletCreate(data api.Request) (api.Reply, *errs.Error) {
 		Block:  true,
 	}
 
-	if err := s.repo.Create(wallet); err != nil {
+	/*if err := s.repo.Create(wallet); err != nil {
 		s.set.Log().Error("unable to create wallet: %s", err)
 		return rpl, err
-	}
+	}*/
+	s.set.Log().Info("типа создали валет в issuing базе данных: %+v", wallet)
 
 	// Request in balance service
 	if errApi := req.CreateBalance(s.set, wallet); errApi != nil {
@@ -51,13 +52,14 @@ func (s *UseCase) WalletCreate(data api.Request) (api.Reply, *errs.Error) {
 
 	// Unblock the wallet
 	wallet.Block = false
-	if err := s.repo.Update(wallet); err != nil {
+	/*if err := s.repo.Update(wallet); err != nil {
 		s.set.Log().Error(err)
 		return rpl, err
-	}
+	}*/
+	s.set.Log().Info("типа обновили валет в issuing базе данных: %+v", wallet)
 
 	// Form Response
-	rpl.WalletID = wallet.Number
+	rpl.WalletID = "TESTWALLETID" // wallet.Number
 	s.set.Log().Info("rpl: %+v", rpl)
 	return rpl, nil
 }

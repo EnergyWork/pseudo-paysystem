@@ -3,7 +3,7 @@ package app
 import (
 	"time"
 
-	v1 "github.com/energywork/pseudo-paysystem/gateway/api/controller/http/v1"
+	"github.com/energywork/pseudo-paysystem/gateway/api/controller/http/v1/v1gin"
 	"github.com/energywork/pseudo-paysystem/gateway/api/usecase"
 	"github.com/energywork/pseudo-paysystem/lib/errs"
 	"github.com/energywork/pseudo-paysystem/lib/httpserver"
@@ -24,10 +24,10 @@ func New(set *setup.Setup) (*App, *errs.Error) {
 func (a *App) Run() *errs.Error {
 
 	useCase := usecase.New(a.set)
-	_ = v1.New(a.set, useCase).ConfigureRouter()
+	_ = v1gin.New(a.set, useCase).ConfigureRouter()
 
 	httpServer := httpserver.New( // this starts the server
-		a.set.Echo(),
+		a.set.Gin(),
 		httpserver.Addr(a.set.Config().HttpHost, a.set.Config().HttpPort),
 		httpserver.ReadTimeout(time.Duration(a.set.Config().ReadTimeout)),
 		httpserver.WriteTimeout(time.Duration(a.set.Config().WriteTimeout)),

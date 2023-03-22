@@ -11,9 +11,9 @@ import (
 var _ API = (*UseCase)(nil) // make sure the useCase implements the interface
 
 type API interface {
-	WalletCreate(req api.Request) (api.Reply, *errs.Error)
-	WalletUpdate(req api.Request) (api.Reply, *errs.Error)
-	WalletGet(req api.Request) (api.Reply, *errs.Error)
+	WalletCreate(*ReqGateWalletCreate) (*RplGateWalletCreate, *errs.Error)
+	WalletUpdate(api.Request) (api.Reply, *errs.Error)
+	WalletGet(api.Request) (api.Reply, *errs.Error)
 }
 
 type UseCase struct {
@@ -27,8 +27,13 @@ func New(set *setup.Setup) *UseCase {
 }
 
 type ReqGateWalletCreate struct {
+	api.Header
 	Phone string
-	// todo : more data
+}
+
+type RplGateWalletCreate struct {
+	api.Header
+	Test string
 }
 
 func (obj *ReqGateWalletCreate) Timeout() time.Duration {
@@ -47,12 +52,13 @@ func (obj *ReqGateWalletCreate) Authorize() *errs.Error {
 	return nil
 }
 
-func (u *UseCase) WalletCreate(req api.Request) (api.Reply, *errs.Error) {
-	var rpl api.Reply
-	errApi := api.NewNATSRequest(u.set, "", req, rpl)
+func (u *UseCase) WalletCreate(req *ReqGateWalletCreate) (*RplGateWalletCreate, *errs.Error) {
+	rpl := &RplGateWalletCreate{}
+	errApi := api.NewNATSRequest(u.set, "issuing/wallet/create", req, &rpl)
 	if errApi != nil {
 		return nil, errApi
 	}
+	rpl.Test = "kek"
 	return rpl, nil
 }
 

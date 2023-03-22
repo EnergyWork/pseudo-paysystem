@@ -24,9 +24,11 @@ func main() {
 
 	// forming setup
 	set := setup.New(l, cfg)
-	if err := set.NewEcho(); err != nil {
+
+	if err := set.NewGin(); err != nil {
 		l.Fatal(err)
 	}
+
 	if err := set.ConnectNATS(); err != nil {
 		l.Fatal(err)
 	}

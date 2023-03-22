@@ -1,6 +1,7 @@
 package setup
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 	"github.com/nats-io/nats.go"
 	"gorm.io/gorm"
@@ -11,6 +12,10 @@ import (
 
 func (s *Setup) Echo() *echo.Echo {
 	return s.echo
+}
+
+func (s *Setup) Gin() *gin.Engine {
+	return s.gin
 }
 
 func (s *Setup) NATS() *nats.Conn {

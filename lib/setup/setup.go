@@ -3,6 +3,7 @@ package setup
 import (
 	"fmt"
 
+	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 	"github.com/nats-io/nats.go"
 	"gorm.io/driver/postgres"
@@ -20,6 +21,7 @@ type Setup struct {
 	echo *echo.Echo
 	nc   *nats.Conn
 	log  domain.Logger
+	gin  *gin.Engine
 }
 
 func New(logger domain.Logger, cfg *config.Config) *Setup {
@@ -36,6 +38,12 @@ func (s *Setup) NewEcho() *errs.Error {
 		e.Debug = true
 	}
 	s.echo = e
+	return nil
+}
+
+func (s *Setup) NewGin() *errs.Error {
+	g := gin.Default()
+	s.gin = g
 	return nil
 }
 

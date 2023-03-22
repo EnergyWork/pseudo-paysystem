@@ -28,9 +28,9 @@ func LoadLogger(dev ...bool) *zerolog.Logger {
 		},*/
 		FormatMessage: func(i interface{}) string {
 			if msg, ok := i.(string); ok && len(msg) > 1000 {
-				return fmt.Sprintf("|SHORT: %s... |", i.(string)[:200])
+				return fmt.Sprintf("|SHORT: %s...", i.(string)[:200])
 			} else {
-				return fmt.Sprintf("| %s |", i)
+				return fmt.Sprintf("| %s", i)
 			}
 		},
 		// Additional parameters
